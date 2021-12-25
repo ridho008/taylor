@@ -177,3 +177,40 @@ function edit_penjualan($data) {
    mysqli_query($conn, "UPDATE penjualan135 SET id_kamar135 = '$id_kamar', id_user135 = '$nama_pen', lama_inap = '$lama_inap' WHERE id_pen135 = $id_pen");
    return mysqli_affected_rows($conn);
 }
+
+function pesan($data) {
+   global $conn;
+   $id_user = htmlspecialchars($data['id_user']);
+   $banyaknya = htmlspecialchars($data['banyaknya']);
+   $id_barang = htmlspecialchars($data['id_barang']);
+   $harga = htmlspecialchars($data['harga']);
+   $warna = htmlspecialchars($data['warna']);
+   $tipe = htmlspecialchars($data['tipe']);
+
+   $totalHarga = $harga * $banyaknya;
+   $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, '$id_barang', '$banyaknya', '$harga', '$id_user', '$warna', null, null, '$tipe')");
+
+   if ($queryNota) {
+      $last_id = mysqli_insert_id($conn);
+      mysqli_query($conn, "INSERT INTO transaksi VALUES (null, '$id_user', '$totalHarga', '$last_id')");
+   }
+   return mysqli_affected_rows($conn);
+}
+
+function vermak($data) {
+   global $conn;
+   // var_dump($data); die;
+   $deskripsi = htmlspecialchars($data['deskripsi']);
+   $nama_pelanggan = htmlspecialchars($data['nama_pelanggan']);
+   $banyaknya = htmlspecialchars($data['banyaknya']);
+
+   $totalHarga = $banyaknya * 50000;
+
+   $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, null, '$banyaknya', '$totalHarga', null, null, '$deskripsi', '$nama_pelanggan')");
+
+   if ($queryNota) {
+      $last_id = mysqli_insert_id($conn);
+      mysqli_query($conn, "INSERT INTO transaksi VALUES (null, null, '$totalHarga', '$last_id')");
+   }
+   return mysqli_affected_rows($conn);
+}

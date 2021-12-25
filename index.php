@@ -1,8 +1,27 @@
 <?php 
+session_start(); 
 require 'config/db.php';
 require 'config/function.php';
 
+if(!isset($_SESSION['role'])) {
+  header("Location: login.php");
+  exit;
+}
+$namaUser = $_SESSION['nama_user'];
+$pelanggan = query("SELECT * FROM user WHERE nama_user = '$namaUser'")[0];
+// var_dump($_SESSION['nama_user'], $pelanggan['id_user']);
+
+
 $barang = query("SELECT * FROM barang");
+$user = query("SELECT * FROM user");
+
+if (isset($_POST['pesan'])) {
+   if(pesan($_POST) > 0) {
+      echo "<script>alert('Barang Berhasil Dipesan.');window.location='index.php';</script>";
+   } else {
+      echo "<script>alert('Barang Gagal Dipesan.');window.location='index.php';</script>";
+   }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,6 +59,8 @@ $barang = query("SELECT * FROM barang");
            <a href="<?= base_url('page/transaksi/transaksi.php') ?>">Transaksi</a> |
            <a href="<?= base_url('page/barang/barang.php') ?>">Baju & Celana</a>
            <a href="<?= base_url('page/nota/nota.php') ?>">Nota</a>
+           Hai, <?= $_SESSION['nama_user'] ?>
+            <a href="logout.php" onclick="return confirm('Yakin Keluar Akun ?')"><mark><b>Keluar</b></mark></a>
          </nav> 
       </div>
       <br>
@@ -47,6 +68,11 @@ $barang = query("SELECT * FROM barang");
          <h2 align="center">Menerima Jahitan Baru Pria & Wanita</h2>
          <p>Ingin Vermak Levis ? Silahkan Isi Formulir <a href="<?= base_url('page/vermak/index.php') ?>">Disini</a></p>
          <?php foreach($barang as $b) : ?>
+            <form action="" method="post">
+         <input type="hidden" name="id_barang" value="<?= $b['id_barang'] ?>">
+         <input type="hidden" name="harga" value="<?= $b['harga_brg'] ?>">
+         <input type="hidden" name="tipe" value="Baru">
+         <input type="hidden" name="id_user" value="<?= $pelanggan['id_user'] ?>">
          <div class="box">
             <img src="<?= base_url('img/barang/' . $b['gambar_brg']) ?>">
             <div class="title">
@@ -60,10 +86,21 @@ $barang = query("SELECT * FROM barang");
                      <option value="Merah">Merah</option>
                      <option value="Putih">Putih</option>
                   </select>
+                  <!-- <select name="id_user" id="id_user">
+                     <?php foreach($user as $u) : ?>
+                        <?php if($u['role'] != 0) : ?>
+                        <option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
+                        <?php endif; ?>
+                     <?php endforeach; ?>
+                  </select> -->
+                  <p>
+                     <input type="number" name="banyaknya">
+                  </p>
                   <br>
                   <button type="submit" name="pesan">Pesan</button>
                </p>
             </div>
+            </form>
          </div>
          <?php endforeach; ?>
       </fieldset>
