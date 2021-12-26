@@ -3,12 +3,23 @@ session_start();
 require 'config/db.php';
 require 'config/function.php';
 
-if(!isset($_SESSION['role'])) {
-  header("Location: login.php");
-  exit;
+// if(!isset($_SESSION['role'])) {
+//   header("Location: login.php");
+//   exit;
+// }
+
+if(isset($_SESSION['role'])) {
+   $namaUser = $_SESSION['nama_user'];
+   $pelanggan = query("SELECT * FROM user WHERE nama_user = '$namaUser'")[0];
+   // var_dump($_SESSION['role']);
+   if ($_SESSION['role'] == 0) {
+      $role = "Admin";
+   } elseif($_SESSION['role'] == 1) {
+      $role = "Pemimpin";
+   } elseif($_SESSION['role'] == 2) {
+      $role = "Pelanggan";
+   }
 }
-$namaUser = $_SESSION['nama_user'];
-$pelanggan = query("SELECT * FROM user WHERE nama_user = '$namaUser'")[0];
 // var_dump($_SESSION['nama_user'], $pelanggan['id_user']);
 
 
@@ -22,6 +33,7 @@ if (isset($_POST['pesan'])) {
       echo "<script>alert('Barang Gagal Dipesan.');window.location='index.php';</script>";
    }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,12 +67,24 @@ if (isset($_POST['pesan'])) {
       <div align="center">
          <nav>
            <a href="http://localhost/taylor">Utama</a> |
-           <a href="<?= base_url('page/pelanggan/pelanggan.php') ?>">Pelanggan</a> |
-           <a href="<?= base_url('page/transaksi/transaksi.php') ?>">Transaksi</a> |
-           <a href="<?= base_url('page/barang/barang.php') ?>">Baju & Celana</a>
-           <a href="<?= base_url('page/nota/nota.php') ?>">Nota</a>
-           Hai, <?= $_SESSION['nama_user'] ?>
+           <?php if(isset($_SESSION['role'])) : ?>
+            <?php if($_SESSION['role'] == 0) : ?>
+                 <a href="<?= base_url('page/pelanggan/pelanggan.php') ?>">Pelanggan</a> |
+                 <a href="<?= base_url('page/transaksi/transaksi.php') ?>">Transaksi</a> |
+                 <a href="<?= base_url('page/barang/barang.php') ?>">Baju & Celana</a>
+                 <a href="<?= base_url('page/nota/nota.php') ?>">Nota</a>
+              <?php elseif($_SESSION['role'] == 1) : ?>
+                 <a href="<?= base_url('page/transaksi/transaksi.php') ?>">Transaksi</a> |
+                 <a href="<?= base_url('page/nota/nota.php') ?>">Nota</a>
+               <?php endif; ?>
+            <?php endif; ?>
+           
+           <?php if(isset($_SESSION['role'])) : ?>
+           Hai, <?= $_SESSION['nama_user'] ?> (<?= $role ?>)
             <a href="logout.php" onclick="return confirm('Yakin Keluar Akun ?')"><mark><b>Keluar</b></mark></a>
+         <?php else: ?>
+            <a href="login.php">Masuk</a>
+         <?php endif; ?>
          </nav> 
       </div>
       <br>
@@ -80,7 +104,7 @@ if (isset($_POST['pesan'])) {
                <p>
                   Harga : <?= number_format($b['harga_brg'],0,',','.') ?>
                   <select name="warna" id="warna">
-                     <option value="">Warna</option>
+                     <option value="">--Warna--</option>
                      <option value="Hitam">Hitam</option>
                      <option value="Dongker">Dongker</option>
                      <option value="Merah">Merah</option>

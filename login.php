@@ -62,6 +62,7 @@ if(isset($_POST['masuk'])) {
             </p>
             <p>
                <button type="submit" name="masuk">Masuk</button>
+               <a href="index.php">Website</a>
             </p>
          </form>
       </div>

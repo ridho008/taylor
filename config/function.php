@@ -187,6 +187,11 @@ function pesan($data) {
    $warna = htmlspecialchars($data['warna']);
    $tipe = htmlspecialchars($data['tipe']);
 
+   if ($warna == null) {
+      echo "<script>alert('Warna Wajib Dipilih.');window.location='index.php';</script>";
+      return false;
+   }
+
    $totalHarga = $harga * $banyaknya;
    $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, '$id_barang', '$banyaknya', '$harga', '$id_user', '$warna', null, null, '$tipe')");
 
@@ -197,20 +202,66 @@ function pesan($data) {
    return mysqli_affected_rows($conn);
 }
 
-function vermak($data) {
+function vermak($data, $role) {
    global $conn;
    // var_dump($data); die;
    $deskripsi = htmlspecialchars($data['deskripsi']);
    $nama_pelanggan = htmlspecialchars($data['nama_pelanggan']);
    $banyaknya = htmlspecialchars($data['banyaknya']);
-
-   $totalHarga = $banyaknya * 50000;
-
-   $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, null, '$banyaknya', '$totalHarga', null, null, '$deskripsi', '$nama_pelanggan')");
-
-   if ($queryNota) {
-      $last_id = mysqli_insert_id($conn);
-      mysqli_query($conn, "INSERT INTO transaksi VALUES (null, null, '$totalHarga', '$last_id')");
+   $pilih_vermak = htmlspecialchars($data['pilih_vermak']);
+   if ($role == 2) {
+      $id_user = htmlspecialchars($data['id_user']);
    }
+
+   if ($pilih_vermak == null || $deskripsi == null) {
+      echo "<script>alert('Inputan Wajib Diisi.');window.location='index.php';</script>";
+      return false;
+   }
+
+   $hargaPerHelai = 1 * $pilih_vermak;
+   $totalHarga = $banyaknya * $pilih_vermak;
+
+   if($role == 2) {
+      $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, null, '$banyaknya', '$hargaPerHelai', '$id_user', null, '$deskripsi', '$nama_pelanggan', 'Vermak')");
+
+      if ($queryNota) {
+         $last_id = mysqli_insert_id($conn);
+         mysqli_query($conn, "INSERT INTO transaksi VALUES (null, '$id_user', '$totalHarga', '$last_id')");
+      }
+
+   } elseif($role == null) {
+      $queryUser = mysqli_query($conn, "INSERT INTO user VALUES (null, '$nama_pelanggan', '2', null, null)") or die(mysqli_error($conn));
+      if ($queryUser) {
+         $id_user_terakhir = mysqli_insert_id($conn);
+         $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, null, '$banyaknya', '$hargaPerHelai', '$id_user_terakhir', null, '$deskripsi', '$nama_pelanggan', 'Vermak')") or die(mysqli_error($conn));
+
+         if ($queryNota) {
+            $last_id = mysqli_insert_id($conn);
+            mysqli_query($conn, "INSERT INTO transaksi VALUES (null, '$id_user_terakhir', '$totalHarga', '$last_id')") or die(mysqli_error($conn));
+         }
+      }
+
+   }
+   return mysqli_affected_rows($conn);
+}
+
+function edit_nota_vermak($data) {
+   global $conn;
+   $id_nota = htmlspecialchars($data['id_nota']);
+   $deskripsi_nota = htmlspecialchars($data['deskripsi_nota']);
+   $nama_pelanggan = htmlspecialchars($data['nama_pelanggan']);
+   $banyaknya = htmlspecialchars($data['banyaknya']);
+   $tipe = htmlspecialchars($data['tipe']);
+   $pilih_vermak = htmlspecialchars($data['pilih_vermak']);
+
+   $hargaPerHelai = 1 * $pilih_vermak;
+   $totalHarga = $banyaknya * $pilih_vermak;
+
+   $queryNota = mysqli_query($conn, "UPDATE nota SET harga = '$hargaPerHelai', deskripsi_nota = '$deskripsi_nota', nama_pelanggan = '$nama_pelanggan', tipe = '$tipe', banyaknya = '$banyaknya' WHERE id_nota = $id_nota");
+
+   if($queryNota) {
+      mysqli_query($conn, "UPDATE transaksi SET hrg_total = '$totalHarga' WHERE id_nota = $id_nota");
+   }
+
    return mysqli_affected_rows($conn);
 }

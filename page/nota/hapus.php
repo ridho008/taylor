@@ -3,11 +3,12 @@ require '../../config/db.php';
 require '../../config/function.php';
 $id = $_GET['id'];
 
-$sql = mysqli_query($conn, "DELETE FROM penjualan135 WHERE id_pen135 = $id");
+$sql = mysqli_query($conn, "DELETE FROM nota WHERE id_nota = $id");
 if($sql) {
-      echo "<script>alert('Data penjualan Berhasil Dihapus.');window.location='penjualan.php';</script>";
+      mysqli_query($conn, "DELETE FROM transaksi WHERE id_nota = $id");
+      echo "<script>alert('Data nota Berhasil Dihapus.');window.location='nota.php';</script>";
    } else {
-      echo "<script>alert('Data penjualan Gagal Dihapus.');window.location='penjualan.php';</script>";
+      echo "<script>alert('Data nota Gagal Dihapus.');window.location='nota.php';</script>";
    }
 
 ?>

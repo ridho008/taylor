@@ -2,19 +2,30 @@
 require '../../config/db.php';
 require '../../config/function.php';
 
-$id_pen = $_GET['id'];
-$penjual = query("SELECT * FROM penjualan135 INNER JOIN user135 ON penjualan135.id_user135 = user135.id_user135 INNER JOIN kamar135 ON penjualan135.id_kamar135 = kamar135.id_kamar135 WHERE id_pen135 = $id_pen")[0];
 
-$user = query("SELECT * FROM user135");
-$kamar = query("SELECT * FROM kamar135");
+if(isset($_GET['act'])) {
+   if ($_GET['act'] == 'vermak') {
+      $button = 'Edit';
+      $name = 'vermak';
+      $id_nota = $_GET['id'];
+      $query = query("SELECT * FROM nota WHERE id_nota = $id_nota")[0];
 
-if (isset($_POST['edit'])) {
-   if(edit_penjualan($_POST) > 0) {
-      echo "<script>alert('Data penjualan Berhasil Diedit.');window.location='penjualan.php';</script>";
-   } else {
-      echo "<script>alert('Data penjualan Gagal Diedit.');window.location='penjualan.php';</script>";
+      
+   }
+
+   if ($_GET['act'] == 'baru') {
+      $button = 'Tambah';
+      $name = 'baru';
    }
 }
+
+if (isset($_POST['vermak'])) {
+         if(edit_nota_vermak($_POST) > 0) {
+            echo "<script>alert('Data Vermak Berhasil Diedit.');window.location='nota.php';</script>";
+         } else {
+            echo "<script>alert('Data Vermak Gagal Diedit.');window.location='nota.php';</script>";
+         }
+      }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,70 +35,50 @@ if (isset($_POST['edit'])) {
    <title>Edit Data Penjualan</title>
 </head>
 <body>
-   <h1>Edit Data Penjualan</h1>
+   <?php 
+   if(isset($_GET['act'])){
+      if(($_GET['act']=='vermak')){ 
+   ?>
+   <h1>Edit Data Nota Vermak</h1>
    <form action="" method="post">
-      <input type="hidden" name="id_pen" value="<?= $penjual['id_pen135']; ?>">
+      <input type="hidden" name="id_nota" value="<?= $id_nota ?>">
       <fieldset>
          <p>
             <label for="nama">Nama Pelanggan: </label>
-            <select name="nama" id="nama">
-               <option value="">-- Pilih Pelanggan --</option>
-               <?php foreach($user as $u) : ?>
-                  <?php 
-                  $id_user = $u['id_user135'];
-                  $queryPen = mysqli_query($conn, "SELECT * FROM penjualan135 WHERE id_user135 = $id_user");
-                  ?>
-                  <?php if(!$queryPen) : ?>
-                     <option value="">Maaf, Pelanggan Telah Menyewa Kamar Hotel.</option>
-                  <?php else : ?>
-                     <?php if($penjual['id_user135'] == $u['id_user135']) : ?>
-                        <option value="<?= $u['id_user135'] ?>" selected><?= $u['nama_user135'] ?></option>
-                     <?php else: ?>
-                        <option value="<?= $u['id_user135'] ?>"><?= $u['nama_user135'] ?></option>
-                     <?php endif; ?>
-                  <?php endif; ?>
-               <?php endforeach; ?>
+            <input type="text" name="nama_pelanggan" value="<?= $query['nama_pelanggan'] ?>">
+         </p>
+         <p>
+            <label for="banyaknya">Banyaknya</label>
+            <input type="number" min="1" name="banyaknya" value="<?= $query['banyaknya'] ?>">
+         </p>
+         <p>
+            <label for="deskripsi">Deskripsi</label>
+            <textarea name="deskripsi_nota" id="Deskripsi" cols="30" rows="10"><?= $query['deskripsi_nota'] ?></textarea>
+         </p>
+         <p>
+            <label for="tipe">Tipe</label>
+            <select name="tipe" id="tipe">
+               <option value="">-- Tipe --</option>
+               <option value="Baru" <?= ($query['tipe'] == 'Baru' ? 'selected' : '') ?>>Buat Baru</option>
+               <option value="Vermak" <?= ($query['tipe'] == 'Vermak' ? 'selected' : '') ?>>Vermak</option>
             </select>
          </p>
          <p>
-            <label for="kamar">kamar Pelanggan: </label>
-            <select name="kamar" id="kamar">
-               <option value="">-- Pilih Kamar --</option>
-               <?php foreach($kamar as $k) : ?>
-                  <?php 
-                  $id_kamar = $k['id_kamar135'];
-                  $queryKamar = mysqli_query($conn, "SELECT * FROM penjualan135 WHERE id_kamar135 = $id_kamar");
-                  ?>
-                  <?php if(!$queryKamar) : ?>
-                     <option value="">Maaf, Pelanggan Telah Menyewa Kamar Hotel.</option>
-                  <?php else: ?>
-                     <?php if($penjual['id_kamar135'] == $k['id_kamar135']) : ?>
-                        <option value="<?= $k['id_kamar135'] ?>" selected><?= $k['nama_kmr135'] ?></option>
-                     <?php else: ?>
-                        <option value="<?= $k['id_kamar135'] ?>"><?= $k['nama_kmr135'] ?></option>
-                     <?php endif; ?>
-                  <?php endif; ?>
-               <?php endforeach; ?>
+            <label for="pilih_vermak">Pilihan Vermak</label>
+            <select name="pilih_vermak" id="pilih_vermak">
+               <option value="">-- Pilih --</option>
+               <option value="25000" <?= ($query['harga'] == '25000' ? 'selected' : '') ?>>Potong Sambung - Celana (Rp.25.000)</option>
+               <option value="20000" <?= ($query['harga'] == '20000' ? 'selected' : '') ?>>Potong Biasa - Celana (Rp.20.000)</option>
+               <option value="30000" <?= ($query['harga'] == '30000' ? 'selected' : '') ?>>Kecilkan Pinggang - Celana (Rp.30.000)</option>
+               <option value="15000" <?= ($query['harga'] == '15000' ? 'selected' : '') ?>>Tempel Celana Koyak (Rp.15.000)</option>
             </select>
          </p>
          <p>
-            <label for="lama_inap">Lama Inap</label>
-            <select name="lama_inap" id="lama_inap">
-               <option value="">-- Lama Inap --</option>
-               <?php for($i = 1; $i <= 10; $i++) : ?>
-                  <?php if($penjual['lama_inap'] == $i) : ?>
-                  <option value="<?= $i ?>" selected><?= $i ?></option>
-                  <?php else: ?>
-                  <option value="<?= $i ?>"><?= $i ?></option>
-                  <?php endif; ?>
-               <?php endfor; ?>
-            </select>
-         </p>
-         <p>
-            <button type="submit" name="edit">Edit</button>
-            <a href="penjualan.php">Kembali</a>
+            <button type="submit" name="<?= $name ?>"><?= $button ?></button>
+            <a href="nota.php">Kembali</a>
          </p>
       </fieldset>
    </form>
+<?php }} ?>
 </body>
 </html>

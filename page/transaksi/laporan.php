@@ -14,22 +14,15 @@ $query = query("SELECT * FROM transaksi LEFT JOIN user ON transaksi.id_user = us
    <title>Daftar Transaksi SURYA TAYLOR</title>
 </head>
 <body>
-   <h2 align="center">Daftar Transaksi</h2>
-   <!-- <a href="tambah.php">Tambah Transaksi</a> -->
-   <a href="<?= base_url('') ?>">Utama</a>
-   <table border="1" cellpadding="8" cellspacing="0">
+   <h1 align="center">Laporan Transaksi SURYA TAYLOR</h2>
+   <table border="1" cellpadding="8" cellspacing="0" width="100%">
       <thead>
          <tr>
             <th>No</th>
             <th>Pelanggan</th>
             <th>Harga</th>
-            <th>Tipe</th>
             <th>Total</th>
-            <?php if(isset($_SESSION['role'])) : ?>
-               <?php if($_SESSION['role'] == 0) : ?>
-            <th>Aksi</th>
-               <?php endif; ?>
-            <?php endif; ?>
+            <th>Tipe</th>
          </tr>
       </thead>
       <tbody>
@@ -45,31 +38,31 @@ $query = query("SELECT * FROM transaksi LEFT JOIN user ON transaksi.id_user = us
                <td><?= number_format($k['harga'], 0, ',', ',') ?></td>
                <td><?= number_format($k['hrg_total'], 0, ',', ',') ?></td>
                <td><?= $k['tipe'] ?></td>
-               <td>
-                  <?php if(isset($_SESSION['role'])) : ?>
-                     <?php if($_SESSION['role'] == 0) : ?>
-                  <!-- <a href="edit.php?id=<?= $k['id_user']; ?>">Edit</a> -->
-                  <a href="hapus.php?id=<?= $k['id_transaksi']; ?>" onclick="return confirm('Yakin ?')">Hapus</a>
-                     <?php endif; ?>
-                  <?php endif; ?>
-               </td>
             </tr>
          <?php endforeach; ?>
       </tbody>
       <tfoot>
          <tr>
             <!-- <td colspan="6"></td> -->
-            <?php if(isset($_SESSION['role'])) : ?>
-               <?php if($_SESSION['role'] == 1) : ?>
-            <td colspan="4" align="center"><b>Sub Total</b> <?= number_format($totalTransaksi,0, ',', '.'); ?></td>
-            <td colspan="2"><a href="laporan.php">Cetak Nota</a></td>
-               <?php elseif($_SESSION['role'] == 0) : ?>
             <td colspan="5" align="center"><b>Sub Total</b> <?= number_format($totalTransaksi,0, ',', '.'); ?></td>
-            <td colspan="2"><a href="laporan.php">Cetak Nota</a></td>
-                <?php endif; ?>
-            <?php endif; ?>
          </tr>
       </tfoot>
    </table>
+         <table width="100%">
+      <tr>
+         <td></td>
+         <td width="200">
+            <p>Pekanbaru, Sukajadi <?= date('Y-m-d'); ?></p>
+            <br>
+            Surya Taylor, 
+            <br><br><br>
+            <p>__________________</p>
+         </td>
+      </tr>
+   </table>
+
+   <script>
+      window.print();
+   </script>
 </body>
 </html>
