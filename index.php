@@ -26,11 +26,13 @@ if(isset($_SESSION['role'])) {
 $barang = query("SELECT * FROM barang");
 $user = query("SELECT * FROM user");
 
-if (isset($_POST['pesan'])) {
-   if(pesan($_POST) > 0) {
-      echo "<script>alert('Barang Berhasil Dipesan.');window.location='index.php';</script>";
-   } else {
-      echo "<script>alert('Barang Gagal Dipesan.');window.location='index.php';</script>";
+if($_SESSION['role'] == 2) {
+   if (isset($_POST['pesan'])) {
+      if(pesan($_POST) > 0) {
+         echo "<script>alert('Barang Berhasil Dipesan.');window.location='index.php';</script>";
+      } else {
+         echo "<script>alert('Barang Gagal Dipesan.');window.location='index.php';</script>";
+      }
    }
 }
 
@@ -90,19 +92,24 @@ if (isset($_POST['pesan'])) {
       <br>
       <fieldset>
          <h2 align="center">Menerima Jahitan Baru Pria & Wanita</h2>
-         <p>Ingin Vermak Levis ? Silahkan Isi Formulir <a href="<?= base_url('page/vermak/index.php') ?>">Disini</a></p>
+         <?php if($_SESSION['role'] == 2 || $_SESSION['role'] == null) : ?>
+         <p align="center">Ingin Vermak Levis ? Silahkan Isi Formulir <a href="<?= base_url('page/vermak/index.php') ?>">Disini</a></p>
+         <?php endif; ?>
          <?php foreach($barang as $b) : ?>
             <form action="" method="post">
          <input type="hidden" name="id_barang" value="<?= $b['id_barang'] ?>">
          <input type="hidden" name="harga" value="<?= $b['harga_brg'] ?>">
          <input type="hidden" name="tipe" value="Baru">
+         <?php if($_SESSION['role'] == 2) : ?>
          <input type="hidden" name="id_user" value="<?= $pelanggan['id_user'] ?>">
+         <?php endif; ?>
          <div class="box">
             <img src="<?= base_url('img/barang/' . $b['gambar_brg']) ?>">
             <div class="title">
                <h3><?= $b['nama_barang'] ?></h3>
                <p>
                   Harga : <?= number_format($b['harga_brg'],0,',','.') ?>
+                  <?php if($_SESSION['role'] == 2) : ?>
                   <select name="warna" id="warna">
                      <option value="">--Warna--</option>
                      <option value="Hitam">Hitam</option>
@@ -110,23 +117,32 @@ if (isset($_POST['pesan'])) {
                      <option value="Merah">Merah</option>
                      <option value="Putih">Putih</option>
                   </select>
-                  <!-- <select name="id_user" id="id_user">
-                     <?php foreach($user as $u) : ?>
-                        <?php if($u['role'] != 0) : ?>
-                        <option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-                        <?php endif; ?>
-                     <?php endforeach; ?>
-                  </select> -->
                   <p>
                      <input type="number" name="banyaknya">
                   </p>
                   <br>
                   <button type="submit" name="pesan">Pesan</button>
+                  <?php elseif($_SESSION['role'] == null) : ?>
+                  <button type="button" onclick="loginDulu()" id="pesan">Pesan</button>
+                  <?php endif; ?>
                </p>
             </div>
             </form>
          </div>
          <?php endforeach; ?>
       </fieldset>
+
+   <script>
+      const tombolPesan = document.querySelector('#pesan');
+      tombolPesan.addEventListener('click', function() {
+         console.log('ok')
+      })
+
+      function loginDulu() {
+         const tombolPesan = document.getElementById('#pesan');
+         alert("Login Terlebih Dahulu.");
+         window.location = "login.php";
+      }
+   </script>
 </body>
 </html>

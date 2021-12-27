@@ -45,14 +45,14 @@ $query = query("SELECT * FROM transaksi LEFT JOIN user ON transaksi.id_user = us
                <td><?= number_format($k['harga'], 0, ',', ',') ?></td>
                <td><?= number_format($k['hrg_total'], 0, ',', ',') ?></td>
                <td><?= $k['tipe'] ?></td>
+               <?php if(isset($_SESSION['role'])) : ?>
+                  <?php if($_SESSION['role'] == 0) : ?>
                <td>
-                  <?php if(isset($_SESSION['role'])) : ?>
-                     <?php if($_SESSION['role'] == 0) : ?>
                   <!-- <a href="edit.php?id=<?= $k['id_user']; ?>">Edit</a> -->
                   <a href="hapus.php?id=<?= $k['id_transaksi']; ?>" onclick="return confirm('Yakin ?')">Hapus</a>
-                     <?php endif; ?>
-                  <?php endif; ?>
                </td>
+                  <?php endif; ?>
+               <?php endif; ?>
             </tr>
          <?php endforeach; ?>
       </tbody>

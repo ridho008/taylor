@@ -4,6 +4,11 @@ session_start();
 require '../../config/db.php';
 require '../../config/function.php';
 
+if(!isset($_SESSION['role'])) {
+  header("Location: ../../login.php");
+  exit;
+}
+
 if (isset($_POST['vermak'])) {
    if(vermak($_POST, $_SESSION['role'] = null) > 0) {
       echo "<script>alert('Pesanan Anda Berhasil Dikirim.');window.location='index.php';</script>";
