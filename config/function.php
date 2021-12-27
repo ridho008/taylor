@@ -265,3 +265,29 @@ function edit_nota_vermak($data) {
 
    return mysqli_affected_rows($conn);
 }
+
+function edit_nota_baru($data) {
+   global $conn;
+   $id_nota = htmlspecialchars($data['id_nota']);
+   $id_user = htmlspecialchars($data['id_user']);
+   $nama_pelanggan = htmlspecialchars($data['nama_pelanggan']);
+   $banyaknya = htmlspecialchars($data['banyaknya']);
+   $pilih_baru = htmlspecialchars($data['pilih_baru']);
+   $pecah = explode(',', $pilih_baru);
+   $harga = intval($pecah[1]);
+   // var_dump($harga); die;
+   $id_barang = intval($pecah[0]);
+
+   $total = $harga * $banyaknya;
+
+   $queryUser = mysqli_query($conn, "UPDATE user SET nama_user = '$nama_pelanggan' WHERE id_user = $id_user") or die(mysqli_error($conn));
+
+   if ($queryUser) {
+      $queryNota = mysqli_query($conn, "UPDATE nota SET banyaknya = '$banyaknya', id_barang = '$id_barang', harga = '$harga' WHERE id_nota = $id_nota") or die(mysqli_error($conn));
+      if ($queryNota) {
+         mysqli_query($conn, "UPDATE transaksi SET hrg_total = '$total' WHERE id_nota = $id_nota") or die(mysqli_error($conn));
+      }
+   }
+
+   return mysqli_affected_rows($conn);
+}
