@@ -36,7 +36,7 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
       </div>
    <div class="box">
    <h3>Nota Baju & Celana Buat Baru</h3>
-   <a href="tambah.php">Tambah Nota</a>
+   <!-- <a href="tambah.php">Tambah Nota</a> -->
       <table border="1" cellpadding="8" cellspacing="0">
          <thead>
             <tr>
@@ -46,6 +46,7 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
                <th>Harga</th>
                <th>Banyaknya</th>
                <th>Tipe</th>
+               <th>Status</th>
                <th>Total</th>
                <?php if(isset($_SESSION['role'])) : ?>
                      <?php if($_SESSION['role'] == 0) : ?>
@@ -70,6 +71,15 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
                   <td><?= number_format($k['harga'], 0, ',', '.') ?></td>
                   <td><?= $k['banyaknya'] ?></td>
                   <td><?= $k['tipe'] ?></td>
+                  <td>
+                  <?php if($k['status'] == 0) : ?>
+                     <p style="color: yellowgreen;">Pending</p>
+                  <?php elseif($k['status'] == 1) : ?>
+                     <p style="color: green;">Pending</p>
+                  <?php elseif($k['status'] == 2) : ?>
+                     <p style="color: red;">Pending</p>
+                  <?php endif; ?>
+                  </td>
                   <td><?= number_format($k['hrg_total'], 0, ',', '.') ?></td>
                   <?php if(isset($_SESSION['role'])) : ?>
                      <?php if($_SESSION['role'] == 0) : ?>

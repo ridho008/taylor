@@ -2,6 +2,7 @@
 session_start(); 
 require 'config/db.php';
 require 'config/function.php';
+error_reporting(0);
 
 // if(!isset($_SESSION['role'])) {
 //   header("Location: login.php");
@@ -26,12 +27,14 @@ if(isset($_SESSION['role'])) {
 $barang = query("SELECT * FROM barang");
 $user = query("SELECT * FROM user");
 
-if($_SESSION['role'] == 2) {
-   if (isset($_POST['pesan'])) {
-      if(pesan($_POST) > 0) {
-         echo "<script>alert('Barang Berhasil Dipesan.');window.location='index.php';</script>";
-      } else {
-         echo "<script>alert('Barang Gagal Dipesan.');window.location='index.php';</script>";
+if (isset($_SESSION['role'])) {
+   if($_SESSION['role'] == 2) {
+      if (isset($_POST['pesan'])) {
+         if(pesan($_POST) > 0) {
+            echo "<script>alert('Barang Berhasil Dipesan.');window.location='index.php';</script>";
+         } else {
+            echo "<script>alert('Barang Gagal Dipesan.');window.location='index.php';</script>";
+         }
       }
    }
 }
@@ -75,6 +78,7 @@ if($_SESSION['role'] == 2) {
                  <a href="<?= base_url('page/transaksi/transaksi.php') ?>">Transaksi</a> |
                  <a href="<?= base_url('page/barang/barang.php') ?>">Baju & Celana</a>
                  <a href="<?= base_url('page/nota/nota.php') ?>">Nota</a>
+                 <a href="<?= base_url('page/belanja/index.php') ?>">Belanja Masuk</a>
               <?php elseif($_SESSION['role'] == 1) : ?>
                  <a href="<?= base_url('page/transaksi/transaksi.php') ?>">Transaksi</a> |
                  <a href="<?= base_url('page/nota/nota.php') ?>">Nota</a>
@@ -92,7 +96,7 @@ if($_SESSION['role'] == 2) {
       <br>
       <fieldset>
          <h2 align="center">Menerima Jahitan Baru Pria & Wanita</h2>
-         <?php if($_SESSION['role'] == 2 || $_SESSION['role'] == null) : ?>
+         <?php if($_SESSION['role'] == 2 || empty($_SESSION['role'])) : ?>
          <p align="center">Ingin Vermak Levis ? Silahkan Isi Formulir <a href="<?= base_url('page/vermak/index.php') ?>">Disini</a></p>
          <?php endif; ?>
          <?php foreach($barang as $b) : ?>
@@ -108,6 +112,7 @@ if($_SESSION['role'] == 2) {
             <div class="title">
                <h3><?= $b['nama_barang'] ?></h3>
                <p>
+                  Stok : <?= $b['stok'] ?> | 
                   Harga : <?= number_format($b['harga_brg'],0,',','.') ?>
                   <?php if($_SESSION['role'] == 2) : ?>
                   <select name="warna" id="warna">

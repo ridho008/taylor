@@ -192,13 +192,26 @@ function pesan($data) {
       return false;
    }
 
-   $totalHarga = $harga * $banyaknya;
-   $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, '$id_barang', '$banyaknya', '$harga', '$id_user', '$warna', null, null, '$tipe')");
+   // Mengurangi stok barang setelah di pesan
+   $queryBarang = mysqli_query($conn, "SELECT * FROM barang WHERE id_barang = $id_barang");
+   $resultBrg = mysqli_fetch_assoc($queryBarang);
+   $rowBrg = $resultBrg['stok'];
+   // var_dump($rowBrg); die;
+   $kurangiStok = $rowBrg - $banyaknya;
 
-   if ($queryNota) {
-      $last_id = mysqli_insert_id($conn);
-      mysqli_query($conn, "INSERT INTO transaksi VALUES (null, '$id_user', '$totalHarga', '$last_id')");
+   $totalHarga = $harga * $banyaknya;
+
+   $barang = mysqli_query($conn, "UPDATE barang SET stok = '$kurangiStok' WHERE id_barang = $id_barang") or die(mysqli_error($conn));
+
+   if ($barang) {
+      $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, '$id_barang', '$banyaknya', '$harga', '$id_user', '$warna', null, null, '$tipe')");
+
+      if ($queryNota) {
+         $last_id = mysqli_insert_id($conn);
+         mysqli_query($conn, "INSERT INTO transaksi VALUES (null, '$id_user', '$totalHarga', '$last_id')");
+      }
    }
+
    return mysqli_affected_rows($conn);
 }
 
