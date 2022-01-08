@@ -97,8 +97,8 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
                <!-- <td colspan="6"></td> -->
                <?php if(isset($_SESSION['role'])) : ?>
                   <?php if($_SESSION['role'] == 0) : ?>
-               <td colspan="7" align="center"><b>Sub Total</b> <?= number_format($totalBaru,0, ',', '.'); ?></td>
-               <td colspan="4"><a href="laporan.php?act=baru">Cetak Nota</a></td>
+               <td colspan="5" align="center"><b>Sub Total</b> <?= number_format($totalBaru,0, ',', '.'); ?></td>
+               <td colspan="4"><a href="laporan_tgl.php?act=baru">Cetak Berdasarkan Tanggal</a> | <a href="laporan.php?act=baru">Cetak Nota</a></td>
                   <?php elseif($_SESSION['role'] == 1) : ?>
                      <td colspan="6" align="center"><b>Sub Total</b> <?= number_format($totalBaru,0, ',', '.'); ?></td>
                      <td colspan="4"><a href="laporan.php?act=baru">Cetak Nota</a></td>
@@ -173,7 +173,7 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
                <?php if(isset($_SESSION['role'])) : ?>
                <?php if($_SESSION['role'] == 0) : ?>
                   <td colspan="7" align="center"><b>Sub Total</b> <?= number_format($total_vermak,0, ',', '.'); ?></td>
-                  <td colspan="4"><a href="laporan.php?act=vermak">Cetak Nota</a></td>
+                  <td colspan="4"><a href="laporan.php?act=vermak">Cetak Nota</a> || <a href="laporan_tgl.php?act=vermak">Cetak Berdasarkan Tanggal</a></td>
                   <?php elseif($_SESSION['role'] == 1) : ?>
                      <td colspan="6" align="center"><b>Sub Total</b> <?= number_format($total_vermak,0, ',', '.'); ?></td>
                      <td colspan="4"><a href="laporan.php?act=baru">Cetak Nota</a></td>
