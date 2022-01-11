@@ -304,3 +304,11 @@ function edit_nota_baru($data) {
 
    return mysqli_affected_rows($conn);
 }
+
+function sampai($data) {
+   global $conn;
+   $status = htmlspecialchars($data['sampai']);
+   $id_nota = htmlspecialchars($data['id_nota']);
+   mysqli_query($conn, "UPDATE nota SET status = '$status' WHERE id_nota = $id_nota") or die(mysqli_error($conn));
+   return mysqli_affected_rows($conn);
+}

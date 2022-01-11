@@ -36,8 +36,7 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
       </div>
    <div class="box">
    <h3>Nota Baju & Celana Buat Baru</h3>
-   <!-- <a href="tambah.php">Tambah Nota</a> -->
-      <table border="1" cellpadding="8" cellspacing="0">
+      <table border="1" cellpadding="8" cellspacing="0" width="100%">
          <thead>
             <tr>
                <th>No</th>
@@ -75,9 +74,9 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
                   <?php if($k['status'] == 0) : ?>
                      <p style="color: yellowgreen;">Pending</p>
                   <?php elseif($k['status'] == 1) : ?>
-                     <p style="color: green;">Pending</p>
+                     <p style="color: green;">Diterima</p>
                   <?php elseif($k['status'] == 2) : ?>
-                     <p style="color: red;">Pending</p>
+                     <p style="color: red;">Ditolak</p>
                   <?php endif; ?>
                   </td>
                   <td><?= number_format($k['hrg_total'], 0, ',', '.') ?></td>
@@ -111,7 +110,7 @@ $q = query("SELECT * FROM nota INNER JOIN transaksi ON nota.id_nota = transaksi.
 
    <div class="box">
       <h3>Nota Vermak Levis</h3>
-      <table cellpadding="8" cellspacing="0" border="1">
+      <table cellpadding="8" cellspacing="0" border="1" width="100%">
          <thead>
             <tr>
                <th>No</th>

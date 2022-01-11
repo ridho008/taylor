@@ -8,7 +8,7 @@ error_reporting(0);
 //   header("Location: login.php");
 //   exit;
 // }
-
+var_dump($_SESSION['nama_user']);
 if(isset($_SESSION['role'])) {
    $namaUser = $_SESSION['nama_user'];
    $pelanggan = query("SELECT * FROM user WHERE nama_user = '$namaUser'")[0];
@@ -82,6 +82,8 @@ if (isset($_SESSION['role'])) {
               <?php elseif($_SESSION['role'] == 1) : ?>
                  <a href="<?= base_url('page/transaksi/transaksi.php') ?>">Transaksi</a> |
                  <a href="<?= base_url('page/nota/nota.php') ?>">Nota</a>
+               <?php elseif($_SESSION['role'] == 2) : ?>
+                 <a href="<?= base_url('page/keranjang/index.php') ?>">Belanja</a>
                <?php endif; ?>
             <?php endif; ?>
            
