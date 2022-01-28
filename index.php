@@ -3,12 +3,12 @@ session_start();
 require 'config/db.php';
 require 'config/function.php';
 error_reporting(0);
-
+var_dump(date('Y-m-d'));
 // if(!isset($_SESSION['role'])) {
 //   header("Location: login.php");
 //   exit;
 // }
-var_dump($_SESSION['nama_user']);
+// var_dump($_SESSION['nama_user']);
 if(isset($_SESSION['role'])) {
    $namaUser = $_SESSION['nama_user'];
    $pelanggan = query("SELECT * FROM user WHERE nama_user = '$namaUser'")[0];

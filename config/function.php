@@ -200,15 +200,15 @@ function pesan($data) {
    $kurangiStok = $rowBrg - $banyaknya;
 
    $totalHarga = $harga * $banyaknya;
-
+   $tglSekarang = date('Y-m-d');
    $barang = mysqli_query($conn, "UPDATE barang SET stok = '$kurangiStok' WHERE id_barang = $id_barang") or die(mysqli_error($conn));
 
    if ($barang) {
-      $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, '$id_barang', '$banyaknya', '$harga', '$id_user', '$warna', null, null, '$tipe')");
+      $queryNota = mysqli_query($conn, "INSERT INTO nota VALUES (null, '$id_barang', '$banyaknya', '$harga', '$id_user', '$warna', null, null, '$tipe', 0, '$tglSekarang')") or die(mysqli_error($conn));
 
       if ($queryNota) {
          $last_id = mysqli_insert_id($conn);
-         mysqli_query($conn, "INSERT INTO transaksi VALUES (null, '$id_user', '$totalHarga', '$last_id')");
+         mysqli_query($conn, "INSERT INTO transaksi VALUES (null, '$id_user', '$totalHarga', '$last_id')") or die(mysqli_error($conn));
       }
    }
 
